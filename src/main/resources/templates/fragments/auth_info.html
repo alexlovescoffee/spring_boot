@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  <div class="auth-info" th:fragment="auth_info">
+    <div>
+      <span>User:<b sec:authentication="name" style="margin: 0 5px"></b></span>
+      <span>with roles:
+        <th:block th:each="role : ${#authentication.authorities}">
+          <b style="margin: 0 1px" th:text="${#strings.replace(role.getAuthority(), 'ROLE_', '')}"></b>
+        </th:block>
+      </span>
+    </div>
+  </div>
+</body>
+</html>

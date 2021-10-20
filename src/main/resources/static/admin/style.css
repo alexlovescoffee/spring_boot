@@ -1,0 +1,97 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+form {margin-top: 10px}
+.tables-block {
+    height: 700px;
+    width: 800px;
+    margin: auto;
+    font-size: 0;
+    background-color: ghostwhite;
+}
+.tables-block div {
+    display: inline-block;
+    font-size: 20px;
+}
+
+.auth-info {
+    height: 50px;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    background-color: lightgrey;
+}
+
+.auth-info div {
+    height: 22px;
+    margin: 14px 0;
+}
+
+.users-table-block {
+    width: 60%;
+    height: 600px;
+    float: left;
+    overflow: auto;
+}
+
+.add-user-block {
+    background-color: darkseagreen;
+    width: 40%;
+    height: 225px;
+}
+
+.update-user-block {
+    background-color: darkseagreen;
+    width: 40%;
+    height: 225px;
+}
+
+.delete-user-block {
+    background-color: darkseagreen;
+    width: 40%;
+    height: 150px;
+}
+
+.users-table {
+    width: 100%;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.users-table th, .users-table td {
+    border: 1px solid black;
+    padding: 2px 4px;
+    text-align: center;
+}
+
+.role-span {padding-right: 5px}
+
+.logout-block {
+    height: 50px;
+    width: 100%;
+    display: flex!important;
+    justify-content: space-between;
+    background-color: lightgrey;
+}
+
+.logout-block button {height: 24px;}
+
+.logout-block button:first-child {margin: 13px 0 13px 20px;}
+
+.logout-block button:last-child {margin: 13px 20px 13px 0;}
+
+.action-title {
+    height: 40px;
+    width: 100%;
+    background-color: ghostwhite;
+    text-align: center;
+}
+.action-title div {
+    height: 24px;
+    margin: 8px 0;
+    background-color: white;
+    border: 1px solid lightgrey;
+    padding: 0 5px;
+}

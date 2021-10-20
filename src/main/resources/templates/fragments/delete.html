@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+  <div class="delete-user-block" th:fragment="delete">
+    <div class="action-title">
+      <div>Delete user</div>
+    </div>
+    <form method="post" th:action="@{/users/delete}" id="delete_form">
+      <table>
+        <tbody>
+        <tr>
+          <td><label for="delete_id" style="padding-right: 20px">Id</label></td>
+          <td><input type="number" name="id" id="delete_id"></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button type="submit">Submit</button></td>
+        </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+</body>
+</html>

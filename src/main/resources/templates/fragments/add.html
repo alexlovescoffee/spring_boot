@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+  <div class="add-user-block" th:fragment="add">
+    <div class="action-title">
+      <div>Add new user</div>
+    </div>
+    <form method="post" th:action="@{/users/add}" id="add_form">
+      <table>
+        <tbody>
+        <tr>
+          <td><label for="add_name">Name</label></td>
+          <td><input type="text" name="name" id="add_name"></td>
+        </tr>
+        <tr>
+          <td><label for="add_password">Password</label></td>
+          <td><input type="text" name="password" id="add_password"></td>
+        </tr>
+        <tr>
+          <td>Role</td>
+          <td>
+            <label><span>Admin</span><input type="checkbox" name="roles[][role]" value="ROLE_ADMIN"></label>
+            <label><span>User</span><input type="checkbox" name="roles[][role]" value="ROLE_USER"></label>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button type="submit">Submit</button></td>
+        </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+</body>
+</html>
