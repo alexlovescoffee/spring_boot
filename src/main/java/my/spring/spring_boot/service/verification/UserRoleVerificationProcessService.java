@@ -21,9 +21,9 @@ public class UserRoleVerificationProcessService implements VerificationService {
     private final RoleRepository roleRepository;
 
     @Override
-    public VerificationService userMustNotExistByName(String name) throws UserIsAlreadyExistException {
-        if (userRepository.findByName(name) != null)
-            throw new UserIsAlreadyExistException("User with name: " + name + " is already exist");
+    public VerificationService userMustNotExistByEmail(String email) throws UserIsAlreadyExistException {
+        if (userRepository.findByEmail(email) != null)
+            throw new UserIsAlreadyExistException("User with email: " + email + " is already exist");
         return this;
     }
 
@@ -35,9 +35,9 @@ public class UserRoleVerificationProcessService implements VerificationService {
     }
 
     @Override
-    public VerificationService userMustNotExistByNameExceptHisOwn(String name, long id) throws UserIsAlreadyExistException {
-        if (userRepository.findByNameAndIdNot(name, id) != null)
-            throw new UserIsAlreadyExistException("User with name: " + name + " is already exist");
+    public VerificationService userMustNotExistByEmailExceptHisOwn(String email, long id) throws UserIsAlreadyExistException {
+        if (userRepository.findByEmailAndIdNot(email, id) != null)
+            throw new UserIsAlreadyExistException("User with name: " + email + " is already exist");
         return this;
     }
 
@@ -49,10 +49,9 @@ public class UserRoleVerificationProcessService implements VerificationService {
         List<Role> roles = new ArrayList<>(user.getRoles());
         for (Role role : roles) {
             Role existingRole;
-            if ((existingRole = roleRepository.findByRole(role.getRole())) != null) {
+            if ((existingRole = roleRepository.findByRole(role.getRole())) != null)
                 role.setId(existingRole.getId());
-                //role.addUser(user);
-            } else
+            else
                 throw new RoleNotExistException("Role with name: " + role.getRole() + " is not exist");
         }
 

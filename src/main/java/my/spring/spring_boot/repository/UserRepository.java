@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query("from User u JOIN FETCH u.roles where u.name=?1")
-    User findByName(String name);
-    User findByNameAndIdNot(String name, long exclude);
+    @Query("from User u JOIN FETCH u.roles where u.email=?1")
+    User findByEmail(String email);
+    User findByEmailAndIdNot(String name, long exclude);
 }

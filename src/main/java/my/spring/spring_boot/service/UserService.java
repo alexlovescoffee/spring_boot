@@ -11,5 +11,5 @@ public interface UserService {
     void deleteUserById(long id) throws DataNotSavedException;
     User getUserById(long id);
     List<User> getAllUsers();
-    User getUserByUsername(String name);
+    User getUserByEmail(String name);
 }

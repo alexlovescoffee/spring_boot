@@ -6,8 +6,8 @@ import my.spring.spring_boot.exception.verificationlevel.UserIsNotExistException
 import my.spring.spring_boot.model.User;
 
 public interface VerificationService {
-    VerificationService userMustNotExistByName(String name) throws UserIsAlreadyExistException;
+    VerificationService userMustNotExistByEmail(String email) throws UserIsAlreadyExistException;
     VerificationService userMustExistById(long id) throws UserIsNotExistException;
-    VerificationService userMustNotExistByNameExceptHisOwn(String name, long id) throws UserIsAlreadyExistException;
+    VerificationService userMustNotExistByEmailExceptHisOwn(String email, long id) throws UserIsAlreadyExistException;
     void terminalMergeRoles(User user) throws RoleNotExistException;
 }

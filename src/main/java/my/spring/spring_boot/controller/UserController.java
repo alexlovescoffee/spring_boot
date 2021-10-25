@@ -9,8 +9,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.security.Principal;
-
 @Controller
 @AllArgsConstructor
 @RequestMapping("user")
@@ -20,7 +18,7 @@ public class UserController {
 
     @GetMapping
     public String userPage(ModelMap model, Authentication auth) {
-        User user = userService.getUserByUsername(auth.getName());
+        User user = userService.getUserByEmail(auth.getName());
         model.addAttribute("user", user);
         return "index";
     }

@@ -1,9 +1,6 @@
 package my.spring.spring_boot.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,12 +11,16 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
-@Getter @Setter @ToString
+@AllArgsConstructor
+@Getter @Setter @Builder @ToString
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String name;
+    private String firstName;
+    private String lastName;
+    private int age;
+    private String email;
     private String password;
 
     @OrderBy("role asc") //роли будут получены в указанном порядке
@@ -38,7 +39,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override

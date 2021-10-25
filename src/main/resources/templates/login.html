@@ -5,7 +5,7 @@
   <title>Login</title>
   <!--в chrome есть некоторые проблемы с отображением favicon
   https://stackoverflow.com/questions/16375592/favicon-not-showing-up-in-google-chrome -->
-  <link rel="shortcut icon" type="image/x-icon" th:href="@{spring-logo.ico}"/>
+  <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/spring-logo.ico}"/>
   <style>
     * {
       margin: 0;
@@ -36,8 +36,8 @@
 <body>
 <div class="form-block">
   <form method="post" action="/login">
-    <div><input type="text" name="j_username" id="username" placeholder="Login"/></div>
-    <div><input type="password" name="j_password" id="password" placeholder="Password"/></div>
+    <div><input type="text" name="j_email" id="email" placeholder="Email" value="admin@gmail.com"/></div>
+    <div><input type="password" name="j_password" id="password" placeholder="Password" value="test"/></div>
     <div style="text-align: center"><input type="submit" value="Submit"/></div>
   </form>
 </div>

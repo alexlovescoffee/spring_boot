@@ -50,7 +50,7 @@ public class AdminController {
     @PostMapping(path = "update", produces = MediaType.APPLICATION_JSON_VALUE + "; charset=utf-8")
     public ResponseEntity<String> updateUser(@RequestBody final User user, Authentication auth) {
         try {
-            long currentUserId = userService.getUserByUsername(auth.getName()).getId();
+            long currentUserId = userService.getUserByEmail(auth.getName()).getId();
             userService.updateUser(user);
 
             //если пользователь изменил себя, то произойдет logout
@@ -70,7 +70,7 @@ public class AdminController {
     @PostMapping(path = "delete", produces = MediaType.APPLICATION_JSON_VALUE + "; charset=utf-8")
     public ResponseEntity<String> deleteUser(@RequestParam(name = "id") long id, Authentication auth) {
         try {
-            long currentUserId = userService.getUserByUsername(auth.getName()).getId();
+            long currentUserId = userService.getUserByEmail(auth.getName()).getId();
             userService.deleteUserById(id);
 
             //если пользователь удалил себя, то произойдет logout

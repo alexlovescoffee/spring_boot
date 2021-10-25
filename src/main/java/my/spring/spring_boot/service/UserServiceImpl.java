@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUser(User user) throws DataNotSavedException {
         verificationService
-                .userMustNotExistByName(user.getName())
+                .userMustNotExistByEmail(user.getEmail())
                 .terminalMergeRoles(user);
         userRepository.save(user);
     }
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     public void updateUser(User user) throws DataNotSavedException {
         verificationService
                 .userMustExistById(user.getId())
-                .userMustNotExistByNameExceptHisOwn(user.getName(), user.getId())
+                .userMustNotExistByEmailExceptHisOwn(user.getEmail(), user.getId())
                 .terminalMergeRoles(user);
         userRepository.save(user);
     }
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByUsername(String name) {
-        return userRepository.findByName(name);
+    public User getUserByEmail(String name) {
+        return userRepository.findByEmail(name);
     }
 }

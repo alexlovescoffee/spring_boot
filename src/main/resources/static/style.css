@@ -1,0 +1,147 @@
+:root {
+    --header-height: 50px;
+    /*--after-header-indent-height: 20px;*/
+    /*--toolbar-height: 58px;*/
+    --main-cont-height: calc(100vh - (var(--header-height)/* + var(--after-header-indent-height)*/));
+    --fixed-table-body-height: calc(var(--main-cont-height)/* - var(--toolbar-height) * 2*/);
+    --width-min: 650px;
+    --width-max: 1280px;
+    --modal-body-edit-width: 630px;
+    --modal-body-edit-height: 670px;
+    --modal-body-show-history-btn-cont-height: 26px;
+    --dark-habr : #303b44;
+    --dark-secondary: #6c757d;
+    --dark-secondary-half: #7F7F7F;
+    --color-status-open: #28a745;
+    --color-status-closed: #dc3545;
+    --color-main-table-row-bttm: #dee2e6;
+}
+
+body {height: 100vh}
+
+main {
+    height: 100%;
+    position: relative;
+}
+
+form {text-align: center}
+form label {font-weight: 600}
+
+.header {
+    height: var(--header-height);
+    margin: auto;
+    padding: 10px 20px;
+    background-color: var(--dark-habr);
+    cursor: default;
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-flex div {height: 30px}
+
+.main-title {
+    font-size: 20px;
+    color: white;
+}
+
+.main-logout {font-size: 18px;}
+
+.main-logout a {
+    color: rgba(255, 255, 255, 0.5)!important;
+    text-decoration: none;
+}
+.main-logout a:hover {color: white!important;}
+
+.row {
+    height: calc(100% - var(--header-height));
+    margin: 0!important;
+}
+
+.ver-menu-cont {padding: 0}
+
+.hor-menu-cont {padding: 0 30px!important}
+
+.table-container {padding: 20px}
+
+#main-cont {height: var(--main-cont-height)}
+
+#main_table, #user_information_table {
+    border: none;
+    border-top: 1px solid var(--color-main-table-row-bttm);
+}
+#main_table thead, #user_information_table thead {
+    border-bottom: 1px solid var(--color-main-table-row-bttm);
+}
+#main_table thead th, #user_information_table thead th {
+    top: 0;
+    position: sticky;
+    text-align: center;
+}
+
+#main_table tbody tr, #user_information_table tbody tr {border-bottom: 1px solid var(--color-main-table-row-bttm)}
+
+#main_table tbody tr td, #user_information_table tbody tr {text-align: center}
+
+.role-span {padding-right: 5px}
+
+.tab-content-admin {
+    border: 1px solid var(--color-main-table-row-bttm);
+    border-top: 0;
+    border-bottom: 0;
+    background-color: white;
+}
+
+.tab-content-user {
+    border: 1px solid var(--color-main-table-row-bttm);
+    background-color: white;
+}
+
+.panel-label {
+    padding: 10px 0;
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.panel-label-inner {
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--color-main-table-row-bttm);
+}
+
+#nav-new_user {border-bottom: 1px solid var(--color-main-table-row-bttm)}
+
+.lilhead {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+.lilfoot {padding: 4px 12px;}
+/************scrollbar************/
+/*Internet Explorer*/
+* {
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    -ms-scrollbar-3dlight-color:    rgba(255,255,255,0);
+    -ms-scrollbar-face-color:       rgba(255,255,255,0);
+    -ms-scrollbar-base-color:       rgba(255,255,255,0);
+    -ms-scrollbar-highlight-color:  rgba(255,255,255,0);
+    -ms-scrollbar-arrow-color:      rgba(255,255,255,0);
+    -ms-scrollbar-darkshadow-color: rgba(255,255,255,0);
+    -ms-scrollbar-shadow-color:     rgba(255,255,255,0);
+    -ms-scrollbar-track-color:      rgba(255,255,255,0);
+}
+/*Chrome и Opera*/
+*::-webkit-scrollbar {width: 6px;}
+*::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.2);
+    border-radius: 10px;
+}
+*::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.2);
+}
+/*Firefox*/
+*{scrollbar-width: thin}
