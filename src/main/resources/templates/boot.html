@@ -1,340 +1,97 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:xtra="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:with="URI=${#httpServletRequest.requestURI}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${URI} == '/admin' ? 'Admin' : 'User'"></title>
     <script th:src="@{/frameworks/jquery/jquery.min.js}"></script>
-    <script th:src="@{/frameworks/jquery/jquery.serialize-object.min.js}"></script>
+    <script th:if="${URI == '/admin'}" th:src="@{/frameworks/jquery/jquery.serialize-object.min.js}"></script>
     <script th:src="@{/frameworks/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/frameworks/bootstrap/js/bootstrap-table.min.js}"></script>
-    <script th:src="@{/frameworks/iziToast/iziToast.min.js}"></script>
-    <script th:src="@{/script.js}"></script>
+    <script th:if="${URI == '/admin'}" th:src="@{/frameworks/iziToast/iziToast.min.js}"></script>
+    <script th:if="${URI == '/admin'}" th:src="@{/admin/script.js}"></script>
 
     <link th:href="@{/frameworks/bootstrap/css/bootstrap.min.css}" type="text/css" rel="stylesheet">
     <link th:href="@{/frameworks/bootstrap/css/bootstrap-table.min.css}" type="text/css" rel="stylesheet">
-    <link th:href="@{/frameworks/iziToast/iziToast.min.css}" type="text/css" rel="stylesheet">
+    <link th:if="${URI == '/admin'}" th:href="@{/frameworks/iziToast/iziToast.min.css}" type="text/css" rel="stylesheet">
     <link th:href="@{/style.css}" type="text/css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/spring-logo.ico}"/>
 </head>
 <body>
-  <main>
-      <div class="header">
-          <div class="header-flex">
-              <div class="main-title">
-                  <span sec:authentication="name"></span>
-                  <span>with roles:</span>
-                  <th:block th:each="role : ${#authentication.authorities}">
-                      <span th:text="${#strings.replace(role.getAuthority(), 'ROLE_', '')}"></span>
-                  </th:block>
-              </div>
-              <div class="main-logout">
-                  <a th:href="@{/logout}" style="color: inherit">Logout</a>
-              </div>
+    <main>
+        <div class="header">
+            <div class="header-flex">
+                <div class="main-title">
+                    <span sec:authentication="name"></span>
+                    <span>with roles:</span>
+                    <th:block th:each="role : ${#authentication.authorities}">
+                        <span th:text="${#strings.replace(role.getAuthority(), 'ROLE_', '')}"></span>
+                    </th:block>
+                </div>
+                <div class="main-logout">
+                    <a th:href="@{/logout}" style="color: inherit">Logout</a>
+                </div>
           </div>
       </div>
-      <div class="row">
-          <div class="col-2 ver-menu-cont">
-              <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                  <a class="nav-link active" id="v-pills-admin_view-tab" data-toggle="pill" href="#v-pills-admin_view" role="tab" aria-controls="v-pills-admin_view" aria-selected="true">Admin</a>
-                  <a class="nav-link" id="v-pills-user_view-tab" data-toggle="pill" href="#v-pills-user_view" role="tab" aria-controls="v-pills-user_view" aria-selected="false">User</a>
-              </div>
-          </div>
-          <div class="col-10 hor-menu-cont bg-light">
-              <div class="tab-content" id="v-pills-tabContent">
-                  <!--Admin-->
-                  <div class="tab-pane fade show active" id="v-pills-admin_view" role="tabpanel" aria-labelledby="v-pills-admin_view-tab">
-                      <div class="main-cont">
-                          <!--Admin:: label-->
-                          <div class="panel-label"><span>Admin panel</span></div>
-                          <div class="nav nav-tabs" role="tablist">
-                              <a class="nav-item nav-link active" id="nav-users_table-tab" data-toggle="tab" href="#nav-users_table" role="tab" aria-controls="nav-users_table" aria-selected="true">Users table</a>
-                              <a class="nav-item nav-link" id="nav-new_user-tab" data-toggle="tab" href="#nav-new_user" role="tab" aria-controls="nav-new_user" aria-selected="false">New User</a>
-                          </div>
-                          <div class="tab-content tab-content-admin">
-                              <!--Admin:: Users table-->
-                              <div class="tab-pane fade show active" id="nav-users_table" role="tabpanel" aria-labelledby="nav-users_table-tab">
-                                  <!--Admin:: Users table:: label-->
-                                  <div class="panel-label-inner bg-light"><span>All users</span></div>
-                                  <!--Admin:: Users table:: table-->
-                                  <div class="table-container">
-                                      <table class="table table-lg table-borderless table-striped" id="main_table"
-                                             data-toggle="table"
-                                             data-pagination="true"
-                                             data-page-size="10"
-                                             data-page-list="[10, 15, 20, 30, 50, All]"
-                                             data-unique-id="id"
-                                             data-show-button-text="true"
-                                             data-sortable="true">
-                                          <thead>
-                                          <tr>
-                                              <th data-sortable="true" data-field="id">ID</th>
-                                              <th data-field="firstName">First Name</th>
-                                              <th data-field="lastName">Last Name</th>
-                                              <th data-field="age">Age</th>
-                                              <th data-field="email">Email</th>
-                                              <th data-field="role">Role</th>
-                                              <th data-field="edit">Edit</th>
-                                              <th data-field="delete">Delete</th>
-                                          </tr>
-                                          </thead>
-                                          <tbody>
-                                              <th:block th:each="user : ${users}">
-                                                  <tr>
-                                                      <td th:text="${user.id}"></td>
-                                                      <td th:text="${user.firstName}"></td>
-                                                      <td th:text="${user.lastName}"></td>
-                                                      <td th:text="${user.age}"></td>
-                                                      <td th:text="${user.email}"></td>
-                                                      <td>
-                                                      <th:block th:each="role : ${user.roles}" >
-                                                          <span class="role-span" th:text="${role}"></span>
-                                                      </th:block>
-                                                      </td>
-                                                      <td><button class="btn btn-info edit-btn">Edit</button></td>
-                                                      <td><button class="btn btn-danger delete-btn">Delete</button></td>
-                                                  </tr>
-                                              </th:block>
-<!--                                          <tr>-->
-<!--                                              <td>1</td>-->
-<!--                                              <td>Alex</td>-->
-<!--                                              <td>Achkasov</td>-->
-<!--                                              <td>26</td>-->
-<!--                                              <td>alexeyfaker@gmail.com</td>-->
-<!--                                              <td>Admin User</td>-->
-<!--                                              <td><button class="btn btn-info edit-btn">Edit</button></td>-->
-<!--                                              <td><button class="btn btn-danger delete-btn">Delete</button></td>-->
-<!--                                          </tr>-->
-<!--                                          <tr>-->
-<!--                                              <td>2</td>-->
-<!--                                              <td>Maria</td>-->
-<!--                                              <td>Esther</td>-->
-<!--                                              <td>62</td>-->
-<!--                                              <td>mr07bellido@yahoo.com</td>-->
-<!--                                              <td>Admin User</td>-->
-<!--                                              <td><button class="btn btn-info edit-btn">Edit</button></td>-->
-<!--                                              <td><button class="btn btn-danger delete-btn">Delete</button></td>-->
-<!--                                          </tr>-->
-<!--                                          <tr>-->
-<!--                                              <td>3</td>-->
-<!--                                              <td>Maria</td>-->
-<!--                                              <td>Esther</td>-->
-<!--                                              <td>62</td>-->
-<!--                                              <td>mr07bellido@yahoo.com</td>-->
-<!--                                              <td>Admin User</td>-->
-<!--                                              <td><button class="btn btn-info edit-btn">Edit</button></td>-->
-<!--                                              <td><button class="btn btn-danger delete-btn">Delete</button></td>-->
-<!--                                          </tr>-->
-<!--                                          <tr>-->
-<!--                                              <td>4</td>-->
-<!--                                              <td>Maria</td>-->
-<!--                                              <td>Esther</td>-->
-<!--                                              <td>62</td>-->
-<!--                                              <td>mr07bellido@yahoo.com</td>-->
-<!--                                              <td>Admin User</td>-->
-<!--                                              <td><button class="btn btn-info edit-btn">Edit</button></td>-->
-<!--                                              <td><button class="btn btn-danger delete-btn">Delete</button></td>-->
-<!--                                          </tr>-->
-                                          </tbody>
-                                      </table>
-                                  </div>
-
-                              </div>
-                              <!--Admin:: New User-->
-                              <div class="tab-pane fade" id="nav-new_user" role="tabpanel" aria-labelledby="nav-new_user-tab">
-                                  <!--Admin:: New User:: label-->
-                                  <div class="panel-label-inner bg-light"><span>Add new user</span></div>
-                                  <form class="col-4" id="add_form" style="margin: 10px auto">
-                                      <div class="form-group">
-                                          <label for="add_firstName">First name</label>
-                                          <input type="text" class="form-control" id="add_firstName" name="firstName">
-                                      </div>
-                                      <div class="form-group">
-                                          <label for="add_lastName">Last name</label>
-                                          <input type="text" class="form-control" id="add_lastName" name="lastName">
-                                      </div>
-                                      <div class="form-group">
-                                          <label for="add_age">Age</label>
-                                          <input type="number" class="form-control" id="add_age" name="age">
-                                      </div>
-                                      <div class="form-group">
-                                          <label for="add_email">Email address</label>
-                                          <input type="email" class="form-control" id="add_email" name="email">
-                                      </div>
-                                      <div class="form-group">
-                                          <label for="add_password">Password</label>
-                                          <input type="password" class="form-control" id="add_password" name="password" autocomplete="new-password">
-                                      </div>
-                                      <div>
-                                          <label style="margin: 0 0 0.5rem 0">Role</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="add_role_admin" value="ADMIN" name="roles[]">
-                                          <label class="form-check-label" for="add_role_admin">Admin</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="add_role_user" value="USER" name="roles[]">
-                                          <label class="form-check-label" for="add_role_user">User</label>
-                                      </div>
-                                      <button type="button" class="btn btn-success" style="display: block; margin: 15px auto" id="submit_add_btn">Add new user</button>
-                                  </form>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <!--User-->
-                  <div class="tab-pane fade" id="v-pills-user_view" role="tabpanel" aria-labelledby="v-pills-user_view-tab">
-                      <div class="main-cont">
-                          <!--User:: label-->
-                          <div class="panel-label"><span>User information page</span></div>
-                          <div class="tab-content tab-content-user">
-                              <!--User:: Users table:: label-->
-                              <div class="panel-label-inner bg-light"><span>About user</span></div>
-                              <!--User:: Users table:: table-->
-                              <div class="table-container">
-                                  <table class="table table-lg table-borderless table-striped" id="user_information_table"
-                                         data-toggle="table"
-                                         data-pagination="true"
-                                         data-unique-id="id"
-                                         data-show-button-text="true"
-                                         data-sortable="false">
-                                      <thead>
-                                          <tr>
-                                              <th data-sortable="true" data-field="id">ID</th>
-                                              <th data-sortable="true" data-field="firstName">First Name</th>
-                                              <th data-sortable="true" data-field="lastName">Last Name</th>
-                                              <th data-sortable="true" data-field="age">Age</th>
-                                              <th data-sortable="true" data-field="email">Email</th>
-                                              <th data-sortable="true" data-field="role">Role</th>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                                          <tr>
-                                              <td>1</td>
-                                              <td>Alex</td>
-                                              <td>Achkasov</td>
-                                              <td>26</td>
-                                              <td>alexeyfaker@gmail.com</td>
-                                              <td>Admin User</td>
-                                          </tr>
-                                      </tbody>
-                                  </table>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </main>
-<!--update user modal-->
-  <div class="modal fade" id="editUserModal">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content">
-              <div class="modal-header bg-light lilhead">
-                  <h5 class="modal-title">Edit user</h5>
-                  <button type="button" class="close" id="close_editUserModal" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body">
-                  <form class="col-10" id="edit_form" style="margin: auto">
-                      <div class="form-group">
-                          <label for="edit_id">Id</label>
-                          <input type="text" class="form-control" id="edit_id" name="id">
-                      </div>
-                      <div class="form-group">
-                          <label for="edit_firstName">First name</label>
-                          <input type="text" class="form-control" id="edit_firstName" name="firstName">
-                      </div>
-                      <div class="form-group">
-                          <label for="edit_lastName">Last name</label>
-                          <input type="text" class="form-control" id="edit_lastName" name="lastName">
-                      </div>
-                      <div class="form-group">
-                          <label for="edit_age">Age</label>
-                          <input type="number" class="form-control" id="edit_age" name="age">
-                      </div>
-                      <div class="form-group">
-                          <label for="edit_email">Email address</label>
-                          <input type="email" class="form-control" id="edit_email" name="email">
-                      </div>
-                      <div class="form-group">
-                          <label for="edit_password">Password</label>
-                          <input type="password" class="form-control" id="edit_password" name="password">
-                      </div>
-                      <div>
-                          <label style="margin: 0 0 0.5rem 0">Role</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" id="edit_role_admin" value="ADMIN" name="roles[]">
-                          <label class="form-check-label" for="edit_role_admin">Admin</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" id="edit_role_user" value="USER" name="roles[]">
-                          <label class="form-check-label" for="edit_role_user">User</label>
-                      </div>
-                  </form>
-              </div>
-              <div class="modal-footer bg-light lilfoot">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" id="submit_update_btn">Edit</button>
-              </div>
-          </div>
-      </div>
-  </div>
-  <!--delete user modal-->
-  <div class="modal fade" id="deleteUserModal">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content">
-              <div class="modal-header bg-light lilhead">
-                  <h5 class="modal-title">Delete user</h5>
-                  <button type="button" class="close" id="close_deleteUserModal" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body">
-                  <form class="col-10" id="delete_form" style="margin: auto">
-                      <div class="form-group">
-                          <label for="delete_id">Id</label>
-                          <input type="text" class="form-control" id="delete_id" disabled>
-                      </div>
-                      <div class="form-group">
-                          <label for="delete_firstName">First name</label>
-                          <input type="text" class="form-control" id="delete_firstName" disabled>
-                      </div>
-                      <div class="form-group">
-                          <label for="delete_lastName">Last name</label>
-                          <input type="text" class="form-control" id="delete_lastName" disabled>
-                      </div>
-                      <div class="form-group">
-                          <label for="delete_age">Age</label>
-                          <input type="number" class="form-control" id="delete_age" disabled>
-                      </div>
-                      <div class="form-group">
-                          <label for="delete_email">Email address</label>
-                          <input type="email" class="form-control" id="delete_email" disabled>
-                      </div>
-                      <div>
-                          <label style="margin: 0 0 0.5rem 0">Role</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" id="delete_role_admin" value="ADMIN" disabled>
-                          <label class="form-check-label" for="delete_role_admin">Admin</label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="checkbox" id="delete_role_user" value=" USER" disabled>
-                          <label class="form-check-label" for="delete_role_user">User</label>
-                      </div>
-                  </form>
-              </div>
-              <div class="modal-footer bg-light lilfoot">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-danger" id="submit_delete_btn">Delete</button>
-              </div>
-          </div>
-      </div>
-  </div>
+        <div class="row" th:if="${URI == '/admin'}">
+            <th:block sec:authorize="hasRole('ADMIN') and hasRole('USER')">
+                <div class="col-2 ver-menu-cont">
+                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link active" data-toggle="pill" href="#" role="tab" aria-selected="true">Admin</a>
+                        <a class="nav-link" href="/user" role="tab" aria-selected="false">User</a>
+                    </div>
+                </div>
+                <div class="col-10 hor-menu-cont bg-light">
+                    <div class="tab-content">
+                        <div th:replace="fragments/tab_admin :: tab_admin(${true})"></div>
+                    </div>
+                </div>
+            </th:block>
+            <th:block sec:authorize="hasRole('ADMIN') and not hasRole('USER')">
+                <div class="col-2 ver-menu-cont">
+                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link active" data-toggle="pill" href="#" role="tab" aria-selected="true">Admin</a>
+                    </div>
+                </div>
+                <div class="col-10 hor-menu-cont bg-light">
+                    <div class="tab-content">
+                        <div th:replace="fragments/tab_admin :: tab_admin(${true})"></div>
+                    </div>
+                </div>
+            </th:block>
+            <div th:replace="fragments/modal_update :: modal_update"></div>
+            <div th:replace="fragments/modal_delete :: modal_delete"></div>
+        </div>
+        <div class="row" th:if="${URI == '/user'}" >
+            <th:block sec:authorize="hasRole('ADMIN') and hasRole('USER')">
+                <div class="col-2 ver-menu-cont">
+                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link"  href="/admin" role="tab" aria-selected="false">Admin</a>
+                        <a class="nav-link active" data-toggle="pill" href="#" role="tab" aria-selected="true">User</a>
+                    </div>
+                </div>
+                <div class="col-10 hor-menu-cont bg-light">
+                    <div class="tab-content">
+                        <div th:replace="fragments/tab_user :: tab_user(${true})"></div>
+                    </div>
+                </div>
+            </th:block>
+            <th:block sec:authorize="hasRole('USER') and not hasRole('ADMIN')">
+                <div class="col-2 ver-menu-cont">
+                    <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link active" data-toggle="pill" href="#" role="tab" aria-selected="true">User</a>
+                    </div>
+                </div>
+                <div class="col-10 hor-menu-cont bg-light">
+                    <div class="tab-content">
+                        <div th:replace="fragments/tab_user :: tab_user(${true})"></div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </main>
 </body>
 </html>

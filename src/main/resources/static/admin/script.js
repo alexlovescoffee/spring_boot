@@ -1,89 +1,169 @@
+let metaData = {
+    editBtn: '<button class="btn btn-info edit-btn">Edit</button>',
+    deleteBtn: '<button class="btn btn-danger delete-btn">Delete</button>'
+}
+
 $(document).ready(function() {
-    $('#add_form').submit(function (e) {
-        e.preventDefault();
+    let $table = $('#main_table');
 
-        let form = $('#add_form');
-        if (checkIfValueIsEmpty(form.serializeArray(), 'roles[][role]'))
-            return;
+    $(document).on('click', '#submit_add_btn', function (e) {
+        addUser();
+    });
 
+    $(document).on('click', '#submit_update_btn', function (e) {
+        updateUser();
+    });
+
+    $(document).on('click', '#submit_delete_btn', function (e) {
+        deleteUser();
+    });
+
+    $table.on('click', '.edit-btn', function (e) {
         $.ajax({
-            type: "POST",
-            url: 'admin/add',
-            data: JSON.stringify(form.serializeObject()),
-            contentType : 'application/json',
-            dataType: 'json',
-            cache: false,
+            url: "admin/get-user?id=" + $(this.parentNode.parentNode).data('uniqueid'),
+            type: "GET",
             success: function (data) {
-                reloadUsersTable(data);
+                feelForm(data, "#edit_");
+                $('#editUserModal').modal('show');
             },
             error: function (xhr) {
-                alert(xhr.responseText);
+                iziToast.error({message: xhr.responseText});
             }
         });
     });
 
-    $('#update_form').submit(function (e) {
-        e.preventDefault();
-
-        let form = $('#update_form');
-        if (checkIfValueIsEmpty(form.serializeArray(), 'roles[][role]'))
-            return;
-
+    $table.on('click', '.delete-btn', function (e) {
         $.ajax({
-            type: "POST",
-            url: 'admin/update',
-            data: JSON.stringify(form.serializeObject()),
-            contentType : 'application/json',
-            //ф-ция $.ajax() узнает о типе присланных сервером данных от самого сервера (средствами MIME). Но также
-            //указать это значение явно: xml, html, script, json, jsonp, text
-            //dataType: 'json',
-            cache: false,
-            success: function (data, statusText, xhr) {
-                if (xhr.status === 205)
-                    window.location.pathname = xhr.getResponseHeader('re-authenticate');
-                else
-                    reloadUsersTable(data);
+            url: "admin/get-user?id=" + $(this.parentNode.parentNode).data('uniqueid'),
+            type: "GET",
+            success: function (data) {
+                feelForm(data, "#delete_");
+                $('#deleteUserModal').modal('show');
             },
             error: function (xhr) {
-                alert(xhr.responseText);
+                iziToast.error({message: xhr.responseText});
             }
         });
-    });
-
-    $('#delete_form').submit(function (e) {
-        e.preventDefault();
-
-        let form = $('#delete_form');
-        if (checkIfValueIsEmpty(form.serializeArray()))
-            return;
-
-        $.post("/admin/delete?" + form.serialize())
-            .done((data, statusText, xhr) => {
-                if (xhr.status === 205)
-                    window.location.pathname = xhr.getResponseHeader('re-authenticate');
-                else
-                    reloadUsersTable(data);
-            }).error((xhr) => {
-                alert(xhr.responseText);
-            });
     });
 });
 
-function reloadUsersTable(data) {
-    let innerBody = '';
-    data.forEach(function (user) {
-        let rolesBlock = '';
-        for (role of user.roles)
-            rolesBlock += '<span class="role-span">' + role +'</span>'
-        innerBody +=
-            '<tr>' +
-                '<td>' + user.id + '</td>' +
-                '<td>' + user.name + '</td>' +
-                '<td>' + user.password + '</td>' +
-                '<td>' + rolesBlock + '</td>' +
-            '</tr>'
+function addUser() {
+    let form = $('#add_form');
+
+    if (checkIfValueIsEmpty(form.serializeArray(), 'roles[]'))
+        return;
+
+    $.ajax({
+        type: "POST",
+        url: "admin",
+        data: JSON.stringify(form.serializeObject()),
+        contentType: "application/json",
+        cache: false,
+        success: function (data, statusText, xhr) {
+            let rolesBlock = '';
+            for (let role of data.roles)
+                rolesBlock += '<span class="role-span">' + role +'</span>'
+
+            $('#main_table').bootstrapTable('append', {
+                id: data.id,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                age: data.age,
+                email: data.email,
+                role: rolesBlock,
+                edit: metaData.editBtn,
+                delete: metaData.deleteBtn
+            });
+
+            $('#nav-users_table-tab').click();
+            feelForm({roles: []}, '#add_');
+            iziToast.success({message: 'User added'});
+        },
+        error: function (xhr) {
+            iziToast.error({message: xhr.responseText});
+        }
     });
-    document.querySelector('.users-table tbody').innerHTML = innerBody;
+}
+
+function updateUser() {
+    let form = $('#edit_form');
+
+    if (checkIfValueIsEmpty(form.serializeArray(), 'roles[]'))
+        return;
+
+    $.ajax({
+        type: "PUT",
+        url: "admin",
+        data: JSON.stringify(form.serializeObject()),
+        contentType: "application/json",
+        cache: false,
+        success: function (data, statusText, xhr) {
+            if (xhr.status === 205)
+                window.location.pathname = xhr.getResponseHeader('re-authenticate');
+            else {
+                let rolesBlock = '';
+                for (let role of data.roles)
+                    rolesBlock += '<span class="role-span">' + role +'</span>'
+                $('#main_table').bootstrapTable('updateByUniqueId', {
+                    id: data.id,
+                    row: {
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        age: data.age,
+                        email: data.email,
+                        role: rolesBlock,
+                    }
+                });
+                $('#editUserModal').click();
+                iziToast.success({message: 'User updated'});
+            }
+        },
+        error: function (xhr) {
+            iziToast.error({message: xhr.responseText});
+        }
+    });
+
+}
+
+function deleteUser() {
+    let formSerialized = [{name: 'id', value: +$('#delete_id').val()}];
+
+    if (checkIfValueIsEmpty(formSerialized))
+        return;
+
+    $.ajax({
+        type: "DELETE",
+        url: "admin?id=" + formSerialized[0].value,
+        cache: false,
+        success: function (data, statusText, xhr) {
+            if (xhr.status === 205)
+                window.location.pathname = xhr.getResponseHeader('re-authenticate');
+            else
+                $('#main_table').bootstrapTable('removeByUniqueId', data);
+
+            $('#close_deleteUserModal').click();
+            iziToast.success({message: 'User deleted'});
+        },
+        error: function (xhr) {
+            iziToast.error({message: xhr.responseText});
+        }
+    });
+}
+
+function feelForm(data, prefix) {
+    $(prefix + 'firstName').val(data.firstName);
+    $(prefix + 'lastName').val(data.lastName);
+    $(prefix + 'age').val(data.age);
+    $(prefix + 'email').val(data.email);
+
+    if (prefix === '#edit_' || prefix === '#delete_')
+        $(prefix + 'id').val(data.id);
+
+    if (prefix === '#edit_' || prefix === '#add_')
+        $(prefix + 'password').val('');
+
+    $(prefix + 'role_admin').prop("checked", data.roles.includes("ADMIN"));
+    $(prefix + 'role_user').prop("checked", data.roles.includes("USER"));
 }
 
 function checkIfValueIsEmpty(form, checkboxName) {
@@ -100,7 +180,7 @@ function checkIfValueIsEmpty(form, checkboxName) {
             emptyState.name = undefined;
     }
     if (emptyState.name) {
-        alert('Field <' + emptyState.name + '> cannot be empty!');
+        iziToast.warning({message: 'Field :' + emptyState.name + ': cannot be empty!'});
         return true;
     }
 }

@@ -1,74 +1,98 @@
 package my.spring.spring_boot.controller;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonView;
+import lombok.AllArgsConstructor;
+import my.spring.spring_boot.dto.UserDto;
+import my.spring.spring_boot.dto.jsonview.OnAdd;
+import my.spring.spring_boot.dto.jsonview.OnEdit;
+import my.spring.spring_boot.dto.jsonview.OnGet;
 import my.spring.spring_boot.exception.servicelevel.DataNotSavedException;
 import my.spring.spring_boot.model.User;
 import my.spring.spring_boot.service.UserService;
-import my.spring.spring_boot.util.WebUtil;
-import org.springframework.http.MediaType;
+import my.spring.spring_boot.service.UserDtoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @AllArgsConstructor
 @RequestMapping("admin")
+@Validated
 public class AdminController {
 
     private final UserService userService;
-    private final WebUtil webUtil;
+    private final UserDtoService userDtoService;
 
     @GetMapping
-    public String adminPage(ModelMap model) {
-        List<User> users = userService.getAllUsers();
+    public String bootPage(ModelMap model, Authentication auth) {
+        List<UserDto> users = userService.getAllUsers()
+                .stream()
+                .map(userDtoService::from_User_ToUserDto)
+                .collect(Collectors.toList());
         model.addAttribute("users", users);
-        return "index";
+        model.addAttribute("current", users
+                .stream()
+                .filter(u -> u.getEmail().equals(auth.getName()))
+                .findFirst()
+                .orElseThrow()
+        );
+        return "boot";
     }
 
+    @GetMapping("get-user")
+    @JsonView(OnGet.class)
     @ResponseBody
-    @GetMapping(path = "get", produces = MediaType.APPLICATION_JSON_VALUE + "; charset=utf-8")
-    public String getUsers() {
-        return webUtil.getListOfUsersLikeJson(userService.getAllUsers());
+    public ResponseEntity<UserDto> getUser(@RequestParam("id") long id) {
+        UserDto userDto = userDtoService.from_User_ToUserDto(userService.getUserById(id));
+        return ResponseEntity.ok(userDto);
     }
 
+    @PostMapping
     @ResponseBody
-    @PostMapping(path = "add", produces = MediaType.APPLICATION_JSON_VALUE + "; charset=utf-8")
-    public ResponseEntity<String> addUser(@RequestBody final User user) {
+    @JsonView(OnGet.class)
+    @Validated(OnAdd.class)
+    public ResponseEntity<?> addUser(@Valid @RequestBody @JsonView(OnAdd.class) final UserDto userDto) {
         try {
-            userService.addUser(user);
-            return ResponseEntity.ok(getUsers());
+            User newUser = userDtoService.from_UserDto_ToUser(userDto);
+            userService.addUser(newUser);
+            return ResponseEntity.ok(userDtoService.from_User_ToUserDto(newUser));
         } catch (DataNotSavedException e) {
             return ResponseEntity.badRequest().body("Error! User not added! Message: " + e.getMessage());
         }
     }
 
+    @PutMapping
     @ResponseBody
-    @PostMapping(path = "update", produces = MediaType.APPLICATION_JSON_VALUE + "; charset=utf-8")
-    public ResponseEntity<String> updateUser(@RequestBody final User user, Authentication auth) {
+    @JsonView(OnGet.class)
+    @Validated(OnEdit.class)
+    public ResponseEntity<?> updateUser(@Valid @RequestBody @JsonView(OnEdit.class) final UserDto userDto,
+                                        Authentication auth) {
         try {
             long currentUserId = userService.getUserByEmail(auth.getName()).getId();
-            userService.updateUser(user);
+            User updateUser = userDtoService.from_UserDto_ToUser(userDto);
+            userService.updateUser(updateUser);
 
             //если пользователь изменил себя, то произойдет logout
-            if (currentUserId == user.getId()) {
-                System.out.println("auth = false");
+            if (currentUserId == updateUser.getId()) {
                 auth.setAuthenticated(false);
                 return ResponseEntity.status(205).header("re-authenticate", "/logout").build();
             }
 
-            return ResponseEntity.ok(getUsers());
+            return ResponseEntity.ok(userDtoService.from_User_ToUserDto(updateUser));
         } catch (DataNotSavedException e) {
             return ResponseEntity.badRequest().body("Error! User not updated! Message: " + e.getMessage());
         }
     }
 
-    @ResponseBody
-    @PostMapping(path = "delete", produces = MediaType.APPLICATION_JSON_VALUE + "; charset=utf-8")
-    public ResponseEntity<String> deleteUser(@RequestParam(name = "id") long id, Authentication auth) {
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(@RequestParam("id") long id, Authentication auth) {
         try {
             long currentUserId = userService.getUserByEmail(auth.getName()).getId();
             userService.deleteUserById(id);
@@ -77,35 +101,9 @@ public class AdminController {
             if (currentUserId == id)
                 return ResponseEntity.status(205).header("re-authenticate", "/logout").build();
 
-            return ResponseEntity.ok(getUsers());
+            return ResponseEntity.ok(id);
         } catch (DataNotSavedException e) {
             return ResponseEntity.badRequest().body("Error! User not deleted! Message: " + e.getMessage());
         }
     }
 }
-
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    @Getter @Setter
-//    @ToString
-//    static class Test {
-//        private int age;
-//        private String name;
-//        //private Set<Role> roles;
-//        private Set<Cat> cats;
-//
-//        @NoArgsConstructor
-//        @AllArgsConstructor
-//        @Getter @Setter @ToString
-//        private static class Cat {
-//            private int id;
-//            private String name;
-//        }
-//    }
-//
-//    @ResponseBody
-//    @PostMapping(path = "test", produces = MediaType.APPLICATION_JSON_VALUE + "; charset=utf-8")
-//    public ResponseEntity<String> test(@RequestBody final Test test) {
-//        System.out.println(test);
-//        return ResponseEntity.ok(test.toString());
-//    }

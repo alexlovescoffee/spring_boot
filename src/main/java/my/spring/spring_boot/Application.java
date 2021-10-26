@@ -7,9 +7,9 @@ import my.spring.spring_boot.repository.RoleRepository;
 import my.spring.spring_boot.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,10 +18,6 @@ import java.util.Set;
 /*
  По умолчанию SpringBoot устанавливает свойству spring.jpa.open-in-view значение true , то есть Spring автоматически
  выполняет транзакцию для каждого запроса.
- ToDo
- В следующей задаче добавить:
- - password encoder
- - dto
 * */
 
 @SpringBootApplication
@@ -34,6 +30,7 @@ public class Application {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
@@ -44,15 +41,17 @@ public class Application {
         Set<Role> set = new HashSet<>();
         Collections.addAll(set, roleAdmin, roleUser);
 
-        User user = new User(1, "Alex", "Link", 26, "admin@gmail.com", "test", set);
+        User user = new User(
+                1,
+                "Админ",
+                "Админов",
+                26,
+                "admin@gmail.com",
+                passwordEncoder.encode("test"),
+                set);
 
         roleRepository.save(roleAdmin);
         roleRepository.save(roleUser);
         userRepository.save(user);
     }
-
-//    @Bean
-//    public ModelMapper modelMapper() {
-//        return new ModelMapper();
-//    }
 }

@@ -1,44 +1,36 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Login</title>
-  <!--в chrome есть некоторые проблемы с отображением favicon
-  https://stackoverflow.com/questions/16375592/favicon-not-showing-up-in-google-chrome -->
-  <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/spring-logo.ico}"/>
-  <style>
-    * {
-      margin: 0;
-      box-sizing: border-box;
-      font-size: 0;
-    }
-    body {
-      height: 700px;
-      width: 480px;
-      margin: auto;
-    }
-    .form-block {
-      height: 100px;
-      margin: auto;
-      padding: 300px 0;
-    }
-    form {padding: 0 30%}
-    form div {margin-bottom: 5px}
-    input {
-      height: 22px;
-      width: 100%;
-      font-size: 16px;
-      text-align: center;
-    }
-    input[type="submit"] {width: 50%}
-  </style>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <script th:src="@{/frameworks/jquery/jquery.min.js}" type="text/javascript"></script>
+    <script th:src="@{/frameworks/bootstrap/js/bootstrap.bundle.min.js}" type="text/javascript"></script>
+    <link th:href="@{/frameworks/bootstrap/css/bootstrap.min.css}" type="text/css" rel="stylesheet">
+    <!--в chrome есть некоторые проблемы с отображением favicon
+    https://stackoverflow.com/questions/16375592/favicon-not-showing-up-in-google-chrome -->
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/spring-logo.ico}"/>
+    <style>
+        body {height: 100vh;}
+        button {width: 100%;}
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .form-block {
+            width: 300px;
+            margin: 50px auto 0 auto;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-light">
 <div class="form-block">
   <form method="post" action="/login">
-    <div><input type="text" name="j_email" id="email" placeholder="Email" value="admin@gmail.com"/></div>
-    <div><input type="password" name="j_password" id="password" placeholder="Password" value="test"/></div>
-    <div style="text-align: center"><input type="submit" value="Submit"/></div>
+      <div class="logo">
+          <span>Please sign in</span>
+      </div>
+      <div style="margin-top: 10px"><input type="email" class="form-control" name="j_email" placeholder="Email address"></div>
+      <div style="margin-bottom: 10px"><input type="password" class="form-control" name="j_password" placeholder="Password" autocomplete="new-password"></div>
+      <button type="submit" class="btn btn-primary">Sign in</button>
   </form>
 </div>
 </body>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:xtra="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+    <div th:class="${active} ? 'tab-pane fade show active' : 'tab-pane fade'" role="tabpanel" th:fragment="tab_user(active)">
+        <div class="main-cont">
+            <!--User:: label-->
+            <div class="panel-label"><span>User information page</span></div>
+            <div class="tab-content tab-content-user">
+                <!--User:: Users table:: label-->
+                <div class="panel-label-inner bg-light"><span>About user</span></div>
+                <!--User:: Users table:: table-->
+                <div class="table-container">
+                    <table class="table table-lg table-borderless table-striped" id="user_information_table"
+                           data-toggle="table"
+                           data-unique-id="id"
+                           data-show-button-text="true"
+                           data-sortable="false">
+                        <thead>
+                        <tr>
+                            <th data-field="id">ID</th>
+                            <th data-field="firstName">First Name</th>
+                            <th data-field="lastName">Last Name</th>
+                            <th data-field="age">Age</th>
+                            <th data-field="email">Email</th>
+                            <th data-field="role">Role</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td th:text="${current.id}"></td>
+                            <td th:text="${current.firstName}"></td>
+                            <td th:text="${current.lastName}"></td>
+                            <td th:text="${current.age}"></td>
+                            <td th:text="${current.email}"></td>
+                            <td xtra:strip-whitespace="deep">
+                                <th:block th:each="role : ${current.roles}">
+                                    <span class="role-span" th:text="${role}"></span>
+                                </th:block>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

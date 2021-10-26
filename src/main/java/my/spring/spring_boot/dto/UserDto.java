@@ -1,8 +1,5 @@
 package my.spring.spring_boot.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import my.spring.spring_boot.dto.jsonview.OnAdd;
@@ -12,7 +9,6 @@ import my.spring.spring_boot.dto.jsonview.OnGet;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /*использовать spring validation
@@ -22,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter @Setter @Builder @ToString
 public class UserDto {
-    @JsonView(OnGet.class)
+    @JsonView({OnGet.class, OnEdit.class})
     private long id;
 
     @JsonView({OnGet.class, OnAdd.class, OnEdit.class})
@@ -50,23 +46,3 @@ public class UserDto {
     private Set<String> roles;
 
 }
-/*
-
-id
-firstName
-lastName
-age
-email
-password
-Set<String> roles
-
-
-
-
-
-
-
-
-
-
- */

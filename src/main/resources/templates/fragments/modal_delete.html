@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+    <div class="modal fade" id="deleteUserModal" th:fragment="modal_delete">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-light lilhead">
+                    <h5 class="modal-title">Delete user</h5>
+                    <button type="button" class="close" id="close_deleteUserModal" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="col-10" id="delete_form" style="margin: auto">
+                        <div class="form-group">
+                            <label for="delete_id">Id</label>
+                            <input type="text" class="form-control" id="delete_id" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="delete_firstName">First name</label>
+                            <input type="text" class="form-control" id="delete_firstName" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="delete_lastName">Last name</label>
+                            <input type="text" class="form-control" id="delete_lastName" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="delete_age">Age</label>
+                            <input type="number" class="form-control" id="delete_age" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="delete_email">Email address</label>
+                            <input type="email" class="form-control" id="delete_email" disabled>
+                        </div>
+                        <div>
+                            <label style="margin: 0 0 0.5rem 0">Role</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="delete_role_admin" value="ADMIN" disabled>
+                            <label class="form-check-label" for="delete_role_admin">Admin</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="delete_role_user" value=" USER" disabled>
+                            <label class="form-check-label" for="delete_role_user">User</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-light lilfoot">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="submit_delete_btn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

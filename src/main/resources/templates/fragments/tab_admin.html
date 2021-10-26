@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:xtra="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div th:class="${active} ? 'tab-pane fade show active' : 'tab-pane fade'" role="tabpanel" th:fragment="tab_admin(active)">
+        <div class="main-cont">
+            <!--Admin:: label-->
+            <div class="panel-label"><span>Admin panel</span></div>
+            <div class="nav nav-tabs" role="tablist">
+                <a class="nav-item nav-link active" id="nav-users_table-tab" data-toggle="tab" href="#nav-users_table" role="tab" aria-controls="nav-users_table" aria-selected="true">Users table</a>
+                <a class="nav-item nav-link" id="nav-new_user-tab" data-toggle="tab" href="#nav-new_user" role="tab" aria-controls="nav-new_user" aria-selected="false">New User</a>
+            </div>
+            <div class="tab-content tab-content-admin">
+                <!--Admin:: Users table-->
+                <div class="tab-pane fade show active" id="nav-users_table" role="tabpanel" aria-labelledby="nav-users_table-tab">
+                    <!--Admin:: Users table:: label-->
+                    <div class="panel-label-inner bg-light"><span>All users</span></div>
+                    <!--Admin:: Users table:: table-->
+                    <div class="table-container">
+                        <table class="table table-lg table-borderless table-striped" id="main_table"
+                               data-toggle="table"
+                               data-pagination="true"
+                               data-page-size="10"
+                               data-page-list="[10, 15, 20, 30, 50, All]"
+                               data-unique-id="id"
+                               data-show-button-text="true"
+                               data-sortable="true">
+                            <thead>
+                            <tr>
+                                <th data-sortable="true" data-field="id">ID</th>
+                                <th data-field="firstName">First Name</th>
+                                <th data-field="lastName">Last Name</th>
+                                <th data-field="age">Age</th>
+                                <th data-field="email">Email</th>
+                                <th data-field="role">Role</th>
+                                <th data-field="edit">Edit</th>
+                                <th data-field="delete">Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="user : ${users}">
+                                <tr>
+                                    <td th:text="${user.id}"></td>
+                                    <td th:text="${user.firstName}"></td>
+                                    <td th:text="${user.lastName}"></td>
+                                    <td th:text="${user.age}"></td>
+                                    <td th:text="${user.email}"></td>
+                                    <td xtra:strip-whitespace="deep">
+                                        <th:block th:each="role : ${user.roles}" >
+                                            <span class="role-span" th:text="${role}"></span>
+                                        </th:block>
+                                    </td>
+                                    <td><button class="btn btn-info edit-btn">Edit</button></td>
+                                    <td><button class="btn btn-danger delete-btn">Delete</button></td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--Admin:: New User-->
+                <div class="tab-pane fade" id="nav-new_user" role="tabpanel" aria-labelledby="nav-new_user-tab">
+                    <!--Admin:: New User:: label-->
+                    <div class="panel-label-inner bg-light"><span>Add new user</span></div>
+                    <form class="col-4" id="add_form" style="margin: 10px auto">
+                        <div class="form-group">
+                            <label for="add_firstName">First name</label>
+                            <input type="text" class="form-control" id="add_firstName" name="firstName">
+                        </div>
+                        <div class="form-group">
+                            <label for="add_lastName">Last name</label>
+                            <input type="text" class="form-control" id="add_lastName" name="lastName">
+                        </div>
+                        <div class="form-group">
+                            <label for="add_age">Age</label>
+                            <input type="number" class="form-control" id="add_age" name="age">
+                        </div>
+                        <div class="form-group">
+                            <label for="add_email">Email address</label>
+                            <input type="email" class="form-control" id="add_email" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="add_password">Password</label>
+                            <input type="password" class="form-control" id="add_password" name="password" autocomplete="new-password">
+                        </div>
+                        <div>
+                            <label style="margin: 0 0 0.5rem 0">Role</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="add_role_admin" value="ADMIN" name="roles[]">
+                            <label class="form-check-label" for="add_role_admin">Admin</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="add_role_user" value="USER" name="roles[]">
+                            <label class="form-check-label" for="add_role_user">User</label>
+                        </div>
+                        <button type="button" class="btn btn-success" style="display: block; margin: 15px auto" id="submit_add_btn">Add new user</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
